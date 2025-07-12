@@ -3,6 +3,7 @@
 import type { Transaction } from '@/lib/types';
 import { formatCurrency } from '@/lib/utils';
 import { Clock, Activity } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface TransactionFeedProps {
   transactions: Transaction[];
@@ -29,50 +30,52 @@ const getStatusText = (status: Transaction['status']) => {
 
 export function TransactionFeed({ transactions, onSelectTransaction }: TransactionFeedProps) {
   return (
-    <div className="bg-card border border-primary rounded-lg p-6">
+    <div className="bg-card border border-primary rounded-lg p-6 h-full">
       <h2 className="text-xl font-bold text-primary mb-4 flex items-center">
         <Activity className="h-5 w-5 me-2" />
         זרימת עסקאות יומית
       </h2>
-      <div className="space-y-3 max-h-[360px] overflow-y-auto">
-        {transactions.length > 0 ? (
-          transactions.map((transaction) => (
-            <div
-              key={transaction.id}
-              className="p-4 bg-background border border-muted rounded-lg cursor-pointer hover:border-primary transition-colors duration-300"
-              onClick={() => onSelectTransaction(transaction)}
-            >
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <div className="font-mono text-primary text-lg">
-                    {formatCurrency(transaction.amount)}
+      <ScrollArea className="h-[calc(100%-40px)]">
+        <div className="space-y-3 pe-4">
+          {transactions.length > 0 ? (
+            transactions.map((transaction) => (
+              <div
+                key={transaction.id}
+                className="p-4 bg-background border border-muted rounded-lg cursor-pointer hover:border-primary transition-colors duration-300"
+                onClick={() => onSelectTransaction(transaction)}
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <div className="font-mono text-primary text-lg">
+                      {formatCurrency(transaction.amount)}
+                    </div>
+                    <div className="text-sm text-muted-foreground">{transaction.source}</div>
                   </div>
-                  <div className="text-sm text-muted-foreground">{transaction.source}</div>
+                  <div className="text-right">
+                    <div className="text-sm text-muted-foreground">{transaction.time}</div>
+                    <div className={`mt-1 px-2 py-1 rounded text-xs font-bold ${getStatusClasses(transaction.status)}`}>
+                      {getStatusText(transaction.status)}
+                    </div>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <div className="text-sm text-muted-foreground">{transaction.time}</div>
-                  <div className={`mt-1 px-2 py-1 rounded text-xs font-bold ${getStatusClasses(transaction.status)}`}>
-                    {getStatusText(transaction.status)}
+                <div className="flex justify-between items-center text-sm">
+                  <div className="flex items-center text-muted-foreground">
+                    <Clock className="h-4 w-4 me-1" />
+                    {transaction.daysToPayment} ימים לתשלום משוער לספק
+                  </div>
+                  <div className="text-primary font-semibold">
+                    לחץ לאסטרטגיות ←
                   </div>
                 </div>
               </div>
-              <div className="flex justify-between items-center text-sm">
-                <div className="flex items-center text-muted-foreground">
-                  <Clock className="h-4 w-4 me-1" />
-                  {transaction.daysToPayment} ימים לתשלום משוער לספק
-                </div>
-                <div className="text-primary font-semibold">
-                  לחץ לאסטרטגיות ←
-                </div>
-              </div>
+            ))
+          ) : (
+            <div className="text-center text-muted-foreground p-8">
+              אין עסקאות להצגה עבור לקוח זה.
             </div>
-          ))
-        ) : (
-          <div className="text-center text-muted-foreground p-8">
-            אין עסקאות להצגה עבור לקוח זה.
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </ScrollArea>
     </div>
   );
 }

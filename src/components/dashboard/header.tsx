@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 
-export function Header() {
+export function Header({ children }: { children?: ReactNode }) {
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -22,6 +22,7 @@ export function Header() {
             <p className="text-accent mt-1">טרמינל אנה1 ליקוודיטי | חברה : משק וכלכלה |</p>
           </div>
         </div>
+        {children}
         <div className="text-left font-mono">
           {currentTime ? (
             <>

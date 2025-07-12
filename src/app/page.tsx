@@ -52,25 +52,26 @@ export default function Home() {
   
   return (
     <div className="min-h-screen bg-background text-foreground p-6 font-body">
-      <Header />
+      <Header>
+        <div className="w-full max-w-xs">
+           <label htmlFor="client-select" className="text-sm text-muted-foreground mb-1 block">סינון לפי לקוח</label>
+           <Select value={selectedClient} onValueChange={setSelectedClient}>
+              <SelectTrigger id="client-select" className="w-full h-9">
+                  <SelectValue placeholder="בחר לקוח..." />
+              </SelectTrigger>
+              <SelectContent>
+                  <SelectItem value="all">כל הלקוחות</SelectItem>
+                  {clients.map(client => (
+                      <SelectItem key={client} value={client}>{client}</SelectItem>
+                  ))}
+              </SelectContent>
+          </Select>
+        </div>
+      </Header>
       <StatsCards />
 
       <main className="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-8">
         <div className="space-y-6">
-            <div className="flex flex-col gap-2">
-                 <label htmlFor="client-select" className="text-sm text-muted-foreground">סינון לפי לקוח</label>
-                <Select value={selectedClient} onValueChange={setSelectedClient}>
-                    <SelectTrigger id="client-select" className="w-full">
-                        <SelectValue placeholder="בחר לקוח..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">כל הלקוחות</SelectItem>
-                        {clients.map(client => (
-                            <SelectItem key={client} value={client}>{client}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </div>
             <TransactionFeed 
               transactions={filteredTransactions}
               onSelectTransaction={handleSelectTransaction}
