@@ -2,13 +2,14 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { Header } from '@/components/dashboard/header';
+import { DataTicker } from '@/components/dashboard/data-ticker';
 import { StatsCards } from '@/components/dashboard/stats-cards';
 import { TransactionFeed } from '@/components/dashboard/transaction-feed';
 import { ProjectionChart } from '@/components/dashboard/projection-chart';
 import { StrategyModal } from '@/components/dashboard/strategy-modal';
 import { dailyTransactions as allTransactions, clients } from '@/lib/data';
 import type { Transaction, InvestmentStrategy } from '@/lib/types';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Zap } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 
@@ -17,6 +18,7 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStrategyForChart, setSelectedStrategyForChart] = useState<InvestmentStrategy | null>(null);
   const [isExecuting, setIsExecuting] = useState(false);
+  const [showExecutionFlash, setShowExecutionFlash] = useState(false);
   const [selectedClient, setSelectedClient] = useState<string>('all');
 
   useEffect(() => {
@@ -37,6 +39,8 @@ export default function Home() {
 
   const handleExecuteStrategy = (strategy: InvestmentStrategy) => {
     setIsExecuting(true);
+    setShowExecutionFlash(true);
+    setTimeout(() => setShowExecutionFlash(false), 500); // Flash duration
     setTimeout(() => {
       setIsExecuting(false);
       setSelectedTransaction(null);
@@ -52,6 +56,8 @@ export default function Home() {
   
   return (
     <div className="min-h-screen bg-background text-foreground p-6 font-body">
+      {showExecutionFlash && <div className="fixed inset-0 bg-primary/30 z-[100] animate-flash" />}
+
       <Header>
         <div className="w-full max-w-xs">
            <label htmlFor="client-select" className="text-sm text-muted-foreground mb-1 block">סינון לפי לקוח</label>
@@ -68,6 +74,7 @@ export default function Home() {
           </Select>
         </div>
       </Header>
+      <DataTicker />
       <StatsCards />
 
       <main className="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-8">
@@ -95,9 +102,9 @@ export default function Home() {
       {isExecuting && (
         <div className="fixed top-4 right-4 bg-primary text-primary-foreground px-6 py-4 rounded-lg shadow-lg z-50 animate-pulse">
           <div className="flex items-center">
-            <CheckCircle className="h-5 w-5 me-2" />
+            <Zap className="h-5 w-5 me-2" />
             <div>
-              <div className="font-bold">אסטרטגיה בביצוע</div>
+              <div className="font-bold">אסטרטגיה שודרה בהצלחה</div>
             </div>
           </div>
         </div>
