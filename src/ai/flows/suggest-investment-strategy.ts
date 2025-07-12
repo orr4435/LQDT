@@ -23,13 +23,15 @@ const InvestmentStrategySchema = z.object({
   expectedReturn: z.number().describe('התשואה הצפויה בש"ח עבור מספר הימים שצוין.'),
   annualRate: z.number().describe('שיעור הריבית השנתי של האסטרטגיה.'),
   risk: z.string().describe('רמת הסיכון של האסטרטגיה (למשל, נמוכה, בינונית, גבוהה).'),
-  allocation: z.array(
-    z.object({
-      instrument: z.string().describe('שם מכשיר ההשקעה בעברית (למשל, פיקדון, אג"ח).'),
-      percentage: z.number().describe('האחוז מסך הסכום המוקצה למכשיר זה.'),
-      rate: z.number().describe('שיעור הריבית עבור מכשיר זה.'),
-    })
-  ).describe('פירוט הקצאת הנכסים לאסטרטגיה זו.'),
+  allocation: z
+    .array(
+      z.object({
+        instrument: z.string().describe('שם מכשיר ההשקעה בעברית (למשל, פיקדון, אג"ח).'),
+        percentage: z.number().describe('האחוז מסך הסכום המוקצה למכשיר זה.'),
+        rate: z.number().describe('שיעור הריבית עבור מכשיר זה.'),
+      })
+    )
+    .describe('פירוט הקצאת הנכסים לאסטרטגיה זו.'),
   dailyReturn: z.number().describe('התשואה היומית הצפויה בש"ח.'),
   color: z.string().describe('הצבע המשויך לאסטרטגיה, בפורמט hex code.'),
 });
@@ -37,7 +39,9 @@ const InvestmentStrategySchema = z.object({
 const SuggestInvestmentStrategiesOutputSchema = z.array(InvestmentStrategySchema);
 export type SuggestInvestmentStrategiesOutput = z.infer<typeof SuggestInvestmentStrategiesOutputSchema>;
 
-export async function suggestInvestmentStrategies(input: SuggestInvestmentStrategiesInput): Promise<SuggestInvestmentStrategiesOutput> {
+export async function suggestInvestmentStrategies(
+  input: SuggestInvestmentStrategiesInput
+): Promise<SuggestInvestmentStrategiesOutput> {
   return suggestInvestmentStrategiesFlow(input);
 }
 
@@ -45,7 +49,7 @@ const suggestInvestmentStrategiesPrompt = ai.definePrompt({
   name: 'suggestInvestmentStrategiesPrompt',
   input: {schema: SuggestInvestmentStrategiesInputSchema},
   output: {schema: SuggestInvestmentStrategiesOutputSchema},
-  prompt: `אתה יועץ פיננסי מומחה המתמחה בניהול נזילות. בהתבסס על סכום העסקה ומספר הימים עד לתשלום, הצע חמש אסטרטגיות השקעה: אסטרטגיה שמרנית, אסטרטגיה מאוזנת, אסטרטגיה אגרסיבית, ושתי אסטרטגיות נפרדות לגידור מט"ח (דולר ואירו). עבור כל אסטרטגיה, ספק פירוט של הקצאת הנכסים, כולל מכשיר ההשקעה, אחוז ההקצאה ושיעור הריבית. כל הפלט חייב להיות בעברית בכיווניות מימין לשמאל (RTL).
+  prompt: `אתה יועץ פיננסי מומחה המתמחה בניהול נזילות. בהתבסס על סכום העסקה ומספר הימים עד לתשלום, הצע שש אסטרטגיות השקעה. כל הפלט חייב להיות בעברית בכיווניות מימין לשמאל (RTL).
 
 סכום העסקה: {{amount}}
 ימים לתשלום: {{daysToPayment}}
@@ -53,12 +57,13 @@ const suggestInvestmentStrategiesPrompt = ai.definePrompt({
 חשוב: יש לחשב את השדה 'expectedReturn' אך ורק עבור מספר הימים שצוין ב-'daysToPayment', ולא כתשואה שנתית. זה צריך להיות הרווח הכולל לתקופה.
 השדה 'dailyReturn' צריך להיות 'expectedReturn' חלקי 'daysToPayment'.
 
-הצע חמש אסטרטגיות השקעה שונות עם רמות סיכון משתנות, עם תיאורים בעברית:
-1.  **אסטרטגיה שמרנית**: התמקדות בהשקעות נזילות ובטוחות מאוד כדי לשמר את ההון תוך יצירת תשואה קטנה.
-2.  **אסטרטגיה מאוזנת**: שילוב של שימור הון וצמיחה מתונה, תוך איזון בין מכשירים בסיכון נמוך לכאלה עם פוטנציאל תשואה גבוה יותר.
-3.  **אסטרטגיה אגרסיבית**: מקסום התשואה על ידי נטילת סיכון גבוה יותר, תוך התמקדות במכשירים בעלי פוטנציאל צמיחה גבוה.
-4.  **גידור מט"ח (דולר אמריקאי)**: הגנה על ערך הסכום מפני תנודות בשער החליפין של הדולר.
-5.  **גידור מט"ח (אירו)**: הגנה על ערך הסכום מפני תנודות בשער החליפין של האירו.
+הצע שש אסטרטגיות השקעה שונות עם רמות סיכון משתנות, עם תיאורים בעברית:
+1.  **אסטרטגיית המערכת (חובה)**: זו חייבת להיות האסטרטגיה הראשונה ברשימה. היא תמהיל של מק"מ, פיקדון קצר מועד, וניתן להוסיף אג"ח כאופציה. על האסטרטגיה להיות מותאמת לשימור הון עם תשואה יציבה. קבע לה צבע אפור כהה (#5A5A5A).
+2.  **אסטרטגיה שמרנית**: התמקדות בהשקעות נזילות ובטוחות מאוד כדי לשמר את ההון תוך יצירת תשואה קטנה.
+3.  **אסטרטגיה מאוזנת**: שילוב של שימור הון וצמיחה מתונה, תוך איזון בין מכשירים בסיכון נמוך לכאלה עם פוטנציאל תשואה גבוה יותר.
+4.  **אסטרטגיה אגרסיבית**: מקסום התשואה על ידי נטילת סיכון גבוה יותר, תוך התמקדות במכשירים בעלי פוטנציאל צמיחה גבוה.
+5.  **גידור מט"ח (דולר אמריקאי)**: הגנה על ערך הסכום מפני תנודות בשער החליפין של הדולר.
+6.  **גידור מט"ח (אירו)**: הגנה על ערך הסכום מפני תנודות בשער החליפין של האירו.
 
 הפורמט חייב להיות JSON, כפי שמצוין כאן:
 {{$output}}`,
@@ -70,7 +75,7 @@ const suggestInvestmentStrategiesFlow = ai.defineFlow(
     inputSchema: SuggestInvestmentStrategiesInputSchema,
     outputSchema: SuggestInvestmentStrategiesOutputSchema,
   },
-  async input => {
+  async (input) => {
     const {output} = await suggestInvestmentStrategiesPrompt(input);
     return output!;
   }
