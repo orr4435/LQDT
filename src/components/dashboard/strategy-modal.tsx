@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import type { Transaction, InvestmentStrategy } from '@/lib/types';
 import { getInvestmentStrategies } from '@/app/actions';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { formatCurrency, cn } from '@/lib/utils';
-import { Zap, X, Loader2 } from 'lucide-react';
+import { Zap, X, Loader2, RefreshCw } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface StrategyModalProps {
@@ -19,39 +20,49 @@ interface StrategyModalProps {
 
 export function StrategyModal({ isOpen, onClose, transaction, onExecute, onSelectStrategyForChart }: StrategyModalProps) {
   const [strategies, setStrategies] = useState<InvestmentStrategy[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedStrategy, setSelectedStrategy] = useState<InvestmentStrategy | null>(null);
-  
-  useEffect(() => {
-    if (isOpen) {
-      setIsLoading(true);
-      setError(null);
-      setStrategies([]);
-      setSelectedStrategy(null);
-      onSelectStrategyForChart(null);
-      
-      getInvestmentStrategies({ amount: transaction.amount, daysToPayment: transaction.daysToPayment })
+  const [customDays, setCustomDays] = useState(transaction.daysToPayment);
+  const [isPending, startTransition] = useTransition();
+
+  const fetchStrategies = () => {
+    setError(null);
+    setStrategies([]);
+    setSelectedStrategy(null);
+    onSelectStrategyForChart(null);
+
+    startTransition(() => {
+      getInvestmentStrategies({ amount: transaction.amount, daysToPayment: customDays })
         .then(result => {
           if (result.error) {
             setError(result.error);
           } else if (result.strategies) {
             setStrategies(result.strategies);
             // Select balanced strategy by default for chart
-             const balanced = result.strategies.find(s => s.risk.toLowerCase().includes('medium') || s.risk.toLowerCase().includes('מאוזנת'));
+            const balanced = result.strategies.find(s => s.risk.toLowerCase().includes('medium') || s.risk.toLowerCase().includes('מאוזנת'));
             if (balanced) {
                 setSelectedStrategy(balanced);
                 onSelectStrategyForChart(balanced);
             }
           }
-        })
-        .finally(() => setIsLoading(false));
+        });
+    });
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      setCustomDays(transaction.daysToPayment);
+      fetchStrategies();
     }
-  }, [isOpen, transaction, onSelectStrategyForChart]);
+  }, [isOpen, transaction]);
   
   const handleStrategyClick = (strategy: InvestmentStrategy) => {
     setSelectedStrategy(strategy);
     onSelectStrategyForChart(strategy);
+  }
+
+  const handleRecalculate = () => {
+    fetchStrategies();
   }
 
   const handleClose = () => {
@@ -73,30 +84,43 @@ export function StrategyModal({ isOpen, onClose, transaction, onExecute, onSelec
         <ScrollArea className="max-h-[calc(90vh-160px)]">
           <div className="p-6">
             <div className="mb-6 p-4 bg-background border border-muted rounded-lg">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
                   <div className="text-muted-foreground text-sm">סכום</div>
                   <div className="text-primary text-xl font-mono">{formatCurrency(transaction.amount)}</div>
                 </div>
-                <div>
-                  <div className="text-muted-foreground text-sm">ימים להשקעה</div>
-                  <div className="text-foreground text-xl">{transaction.daysToPayment}</div>
-                </div>
-                <div>
+                 <div>
                   <div className="text-muted-foreground text-sm">מקור</div>
                   <div className="text-foreground text-xl">{transaction.source}</div>
+                </div>
+                <div className="md:col-span-2 flex gap-2 items-end">
+                    <div className="flex-grow">
+                        <label htmlFor="days-input" className="text-muted-foreground text-sm">מספר ימי השקעה</label>
+                        <Input
+                            id="days-input"
+                            type="number"
+                            value={customDays}
+                            onChange={(e) => setCustomDays(Number(e.target.value))}
+                            className="text-xl h-auto py-1"
+                            placeholder="לדוגמה: 30"
+                        />
+                    </div>
+                    <Button onClick={handleRecalculate} disabled={isPending} size="icon" className="h-10 w-10 shrink-0">
+                        {isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : <RefreshCw className="h-5 w-5" />}
+                        <span className="sr-only">חשב מחדש</span>
+                    </Button>
                 </div>
               </div>
             </div>
 
-            {isLoading && (
+            {isPending && (
               <div className="flex justify-center items-center h-64">
                 <Loader2 className="h-12 w-12 animate-spin text-primary" />
               </div>
             )}
             {error && <div className="text-destructive text-center">{error}</div>}
 
-            {!isLoading && !error && (
+            {!isPending && !error && (
               <div className="space-y-4">
                 {strategies.map((strategy) => (
                   <div
@@ -158,7 +182,7 @@ export function StrategyModal({ isOpen, onClose, transaction, onExecute, onSelec
         <div className="flex gap-4 p-6 pt-0 mt-2">
             <Button
               onClick={() => selectedStrategy && onExecute(selectedStrategy)}
-              disabled={!selectedStrategy || isLoading}
+              disabled={!selectedStrategy || isPending}
               className="flex-1 py-3 h-auto text-base"
             >
               <Zap className="h-5 w-5 me-2" />

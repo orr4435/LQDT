@@ -45,7 +45,7 @@ const suggestInvestmentStrategiesPrompt = ai.definePrompt({
   name: 'suggestInvestmentStrategiesPrompt',
   input: {schema: SuggestInvestmentStrategiesInputSchema},
   output: {schema: SuggestInvestmentStrategiesOutputSchema},
-  prompt: `You are an expert financial advisor specializing in liquidity management. Based on the transaction amount and the number of days until payment, suggest three investment strategies: a conservative strategy, a balanced strategy and an aggressive strategy. For each strategy provide a breakdown of the asset allocation, including the investment instrument, the percentage of the total amount allocated to the instrument, and the interest rate for that instrument.
+  prompt: `You are an expert financial advisor specializing in liquidity management. Based on the transaction amount and the number of days until payment, suggest five investment strategies: a conservative strategy, a balanced strategy, an aggressive strategy, and two distinct currency hedging strategies (for USD and EUR). For each strategy provide a breakdown of the asset allocation, including the investment instrument, the percentage of the total amount allocated to the instrument, and the interest rate for that instrument.
 
 Transaction Amount: {{amount}}
 Days to Payment: {{daysToPayment}}
@@ -53,7 +53,7 @@ Days to Payment: {{daysToPayment}}
 IMPORTANT: The 'expectedReturn' field must be calculated ONLY for the specified 'daysToPayment', not an annual return. It should be the total profit for the period.
 The 'dailyReturn' should be the 'expectedReturn' divided by 'daysToPayment'.
 
-Suggest three distinct investment strategies with varying risk levels.
+Suggest five distinct investment strategies with varying risk levels.
 
 Here is the format that must be followed, in JSON:
 {{$output}}`,
