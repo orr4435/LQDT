@@ -69,7 +69,7 @@ export function ProjectionChart() {
       </CardHeader>
       <CardContent className="flex-1 -mt-4">
           <ChartContainer config={chartConfig} className="h-full w-full">
-            <AreaChart accessibilityLayer data={chartData}>
+            <AreaChart accessibilityLayer data={chartData} margin={{ top: 10, right: 10, left: 10, bottom: 40 }}>
               <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
               <XAxis 
                 dataKey="dateFormatted" 
@@ -103,6 +103,7 @@ export function ProjectionChart() {
                     <stop offset="95%" stopColor="var(--color-checking)" stopOpacity={0.05}/>
                   </linearGradient>
                 </defs>
+              <Legend content={<ChartLegendContent />} />
               <Area 
                 dataKey="savings"
                 type="natural"
@@ -110,6 +111,7 @@ export function ProjectionChart() {
                 stroke="var(--color-savings)"
                 strokeWidth={2}
                 dot={false}
+                name="חיסכון המערכת"
               />
               <Area 
                 dataKey="traditional"
@@ -118,6 +120,7 @@ export function ProjectionChart() {
                 stroke="var(--color-traditional)"
                 strokeWidth={2}
                 dot={false}
+                name="ניהול מסורתי"
               />
                <Area 
                 dataKey="checking"
@@ -127,13 +130,11 @@ export function ProjectionChart() {
                 strokeWidth={2}
                 strokeDasharray="3 4"
                 dot={false}
+                name='ריבית על עו"ש'
               />
             </AreaChart>
           </ChartContainer>
       </CardContent>
-       <CardFooter className="flex-col items-start gap-2 text-sm pt-4 border-t">
-          <ChartLegend content={<ChartLegendContent />} />
-      </CardFooter>
     </Card>
   );
 }
