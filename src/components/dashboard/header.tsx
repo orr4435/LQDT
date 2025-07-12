@@ -2,9 +2,18 @@
 
 import { useState, useEffect, type ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
-import { History } from 'lucide-react';
+import { History, Wand2 } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-export function Header({ children, onShowHistory }: { children?: ReactNode, onShowHistory: () => void }) {
+interface HeaderProps {
+  onShowHistory: () => void;
+  clients: string[];
+  selectedClient: string;
+  onClientChange: (value: string) => void;
+}
+
+
+export function Header({ onShowHistory, clients, selectedClient, onClientChange }: HeaderProps) {
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -24,8 +33,25 @@ export function Header({ children, onShowHistory }: { children?: ReactNode, onSh
             <p className="text-accent mt-1">Terminal v1 anna LQDT</p>
           </div>
         </div>
-        <div className="flex-1 flex justify-center">{children}</div>
+        
         <div className="flex items-center gap-4">
+           <div className="w-full max-w-[200px]">
+             <Select value={selectedClient} onValueChange={onClientChange}>
+                <SelectTrigger id="client-select" className="w-full h-9">
+                    <SelectValue placeholder="בחר לקוח..." />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="all">כל הלקוחות</SelectItem>
+                    {clients.map(client => (
+                        <SelectItem key={client} value={client}>{client}</SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+          </div>
+          <Button variant="outline" onClick={() => { /* Placeholder for future functionality */ }}>
+            <Wand2 className="me-2 h-4 w-4" />
+            בניית אסטרטגיות
+          </Button>
           <Button variant="outline" onClick={onShowHistory}>
             <History className="me-2 h-4 w-4" />
             היסטוריית אסטרטגיות
