@@ -4,7 +4,7 @@
 import { TrendingUp } from 'lucide-react';
 
 const tickerData = [
-  { label: 'דולר', value: '3.73', change: '-0.05%' },
+  { label: 'דולר', value: '3.31', change: '-0.05%' },
   { label: 'אירו', value: '3.98', change: '+0.02%' },
   { label: 'מק"מ לשבוע', value: '4.15%', change: '+0.01%' },
   { label: 'מק"מ לחודש', value: '4.20%', change: '+0.01%' },
