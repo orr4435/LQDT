@@ -19,7 +19,7 @@ export function Header() {
           <div className="bg-primary px-3 py-1 rounded text-primary-foreground font-bold">LQDT</div>
           <div>
             <h1 className="text-3xl font-bold text-primary">מערכת ניהול נזילות</h1>
-            <p className="text-accent mt-1">טרמינל השקעות | חברה 8B ₪</p>
+            <p className="text-accent mt-1">טרמינל אנה1 ליקוודיטי | חברה : משק וכלכלה |</p>
           </div>
         </div>
         <div className="text-left font-mono">
