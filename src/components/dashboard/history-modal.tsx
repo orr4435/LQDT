@@ -51,7 +51,7 @@ export function HistoryModal({ isOpen, onClose }: HistoryModalProps) {
                     <TableCell>{strategy.strategyName}</TableCell>
                     <TableCell className="text-right font-mono">{formatCurrency(strategy.amount)}</TableCell>
                     <TableCell className="text-right font-mono text-green-400">{formatCurrency(strategy.profit)}</TableCell>
-                    <TableCell className="text-right font-mono">{formatCurrency(strategy.benchmarkProfit)}</TableCell>
+                    <TableCell className="text-right font-mono text-red-400">{formatCurrency(strategy.benchmarkProfit)}</TableCell>
                     </TableRow>
                 ))}
                 </TableBody>

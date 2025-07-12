@@ -54,6 +54,8 @@ export const historicalSavings: HistoricalDataPoint[] = generateHistoricalData()
 const generateExecutedStrategies = (): ExecutedStrategy[] => {
     const strategies: ExecutedStrategy[] = [];
     const today = new Date();
+    const benchmarkAnnualRate = 0.0025; // 0.25% annual rate for checking account
+
     for (let i = 0; i < 50; i++) {
         const daysAgo = Math.floor(Math.random() * 365);
         const investmentDays = Math.floor(Math.random() * 25) + 5; // 5 to 30 days
@@ -62,6 +64,7 @@ const generateExecutedStrategies = (): ExecutedStrategy[] => {
         const amount = Math.floor(Math.random() * 4800001) + 200000; // 200K to 5M
         const annualRate = (Math.random() * 3 + 2) / 100; // 2% to 5%
         const profit = amount * (annualRate / 365) * investmentDays;
+        const benchmarkProfit = amount * (benchmarkAnnualRate / 365) * investmentDays;
         
         strategies.push({
             id: `exec-${i + 1}`,
@@ -70,7 +73,7 @@ const generateExecutedStrategies = (): ExecutedStrategy[] => {
             strategyName: i % 3 === 0 ? 'אסטרטגיה מאוזנת' : (i % 3 === 1 ? 'אסטרטגיית המערכת' : 'אסטרטגיה שמרנית'),
             amount: amount,
             profit: profit,
-            benchmarkProfit: 0, // עו"ש לא מניב תשואה
+            benchmarkProfit: benchmarkProfit,
         });
     }
     return strategies.sort((a, b) => new Date(b.purchaseDate).getTime() - new Date(a.purchaseDate).getTime());
