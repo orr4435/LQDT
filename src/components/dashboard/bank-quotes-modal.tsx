@@ -4,23 +4,44 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import React from 'react';
 
 interface BankQuotesModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const bankQuotes = [
-  { name: 'בנק מרכנתיל', daily: '3.85%', weekly: '3.90%', monthly: '4.05%' },
-  { name: 'בנק דיסקונט', daily: '3.82%', weekly: '3.88%', monthly: '4.02%' },
-  { name: 'בנק הפועלים', daily: '3.90%', weekly: '3.95%', monthly: '4.10%' },
-  { name: 'בנק לאומי', daily: '3.88%', weekly: '3.92%', monthly: '4.08%' },
-  { name: 'בנק מזרחי', daily: '3.86%', weekly: '3.91%', monthly: '4.06%' },
-  { name: 'בנק יהב', daily: '3.80%', weekly: '3.85%', monthly: '4.00%' },
-  { name: 'בנק ONE ZERO', daily: '4.00%', weekly: '4.05%', monthly: '4.20%' },
+const initialBankQuotes = [
+  { name: 'בנק מרכנתיל', daily: 3.85, weekly: 3.90, monthly: 4.05 },
+  { name: 'בנק דיסקונט', daily: 3.82, weekly: 3.88, monthly: 4.02 },
+  { name: 'בנק הפועלים', daily: 3.90, weekly: 3.95, monthly: 4.10 },
+  { name: 'בנק לאומי', daily: 3.88, weekly: 3.92, monthly: 4.08 },
+  { name: 'בנק מזרחי', daily: 3.86, weekly: 3.91, monthly: 4.06 },
+  { name: 'בנק יהב', daily: 3.80, weekly: 3.85, monthly: 4.00 },
+  { name: 'בנק ONE ZERO', daily: 4.00, weekly: 4.05, monthly: 4.20 },
 ];
 
 export function BankQuotesModal({ isOpen, onClose }: BankQuotesModalProps) {
+    const [bankQuotes, setBankQuotes] = React.useState(initialBankQuotes);
+
+    React.useEffect(() => {
+        if (!isOpen) return;
+
+        const interval = setInterval(() => {
+            setBankQuotes(quotes => 
+                quotes.map(q => ({
+                    ...q,
+                    daily: q.daily + (Math.random() - 0.5) * 0.02,
+                    weekly: q.weekly + (Math.random() - 0.5) * 0.02,
+                    monthly: q.monthly + (Math.random() - 0.5) * 0.02,
+                }))
+            );
+        }, 2000); // Update every 2 seconds
+
+        return () => clearInterval(interval);
+    }, [isOpen]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl w-full">
@@ -45,14 +66,17 @@ export function BankQuotesModal({ isOpen, onClose }: BankQuotesModalProps) {
                 </TableRow>
                 </TableHeader>
                 <TableBody>
-                {bankQuotes.map((quote) => (
-                    <TableRow key={quote.name}>
-                        <TableCell className="font-medium">{quote.name}</TableCell>
-                        <TableCell className="text-center font-mono">{quote.daily}</TableCell>
-                        <TableCell className="text-center font-mono">{quote.weekly}</TableCell>
-                        <TableCell className="text-center font-mono">{quote.monthly}</TableCell>
-                    </TableRow>
-                ))}
+                {bankQuotes.map((quote) => {
+                    const changeDirection = Math.random() > 0.5;
+                    return (
+                        <TableRow key={quote.name}>
+                            <TableCell className="font-medium">{quote.name}</TableCell>
+                            <TableCell className={cn("text-center font-mono transition-colors duration-200 animate-quote-flash", changeDirection ? 'text-green-400' : 'text-red-400')}>{quote.daily.toFixed(2)}%</TableCell>
+                            <TableCell className={cn("text-center font-mono transition-colors duration-200 animate-quote-flash", !changeDirection ? 'text-green-400' : 'text-red-400')} style={{animationDelay: '0.2s'}}>{quote.weekly.toFixed(2)}%</TableCell>
+                            <TableCell className={cn("text-center font-mono transition-colors duration-200 animate-quote-flash", changeDirection ? 'text-green-400' : 'text-red-400')} style={{animationDelay: '0.4s'}}>{quote.monthly.toFixed(2)}%</TableCell>
+                        </TableRow>
+                    )
+                })}
                 </TableBody>
             </Table>
         </div>
