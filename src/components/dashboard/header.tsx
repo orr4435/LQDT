@@ -2,18 +2,19 @@
 
 import { useState, useEffect, type ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
-import { History, Wand2 } from 'lucide-react';
+import { History, Wand2, Banknote } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface HeaderProps {
   onShowHistory: () => void;
+  onShowQuotes: () => void;
   clients: string[];
   selectedClient: string;
   onClientChange: (value: string) => void;
 }
 
 
-export function Header({ onShowHistory, clients, selectedClient, onClientChange }: HeaderProps) {
+export function Header({ onShowHistory, onShowQuotes, clients, selectedClient, onClientChange }: HeaderProps) {
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -34,7 +35,7 @@ export function Header({ onShowHistory, clients, selectedClient, onClientChange 
           </div>
         </div>
         
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
            <div className="w-full max-w-[200px]">
              <Select value={selectedClient} onValueChange={onClientChange}>
                 <SelectTrigger id="client-select" className="w-full h-9">
@@ -48,6 +49,10 @@ export function Header({ onShowHistory, clients, selectedClient, onClientChange 
                 </SelectContent>
             </Select>
           </div>
+          <Button variant="outline" onClick={onShowQuotes}>
+            <Banknote className="me-2 h-4 w-4" />
+            רענון ציטוטים מבנקים
+          </Button>
           <Button variant="outline" onClick={() => { /* Placeholder for future functionality */ }}>
             <Wand2 className="me-2 h-4 w-4" />
             בניית אסטרטגיות

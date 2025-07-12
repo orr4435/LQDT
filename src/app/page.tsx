@@ -9,6 +9,7 @@ import { ProjectionChart } from '@/components/dashboard/projection-chart';
 import { StrategyModal } from '@/components/dashboard/strategy-modal';
 import { ExecutionFlow } from '@/components/dashboard/execution-flow';
 import { HistoryModal } from '@/components/dashboard/history-modal';
+import { BankQuotesModal } from '@/components/dashboard/bank-quotes-modal';
 import { ChatWidget } from '@/components/dashboard/chat-widget';
 import { dailyTransactions as allTransactions, clients } from '@/lib/data';
 import type { Transaction, InvestmentStrategy } from '@/lib/types';
@@ -18,6 +19,7 @@ export default function Home() {
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+  const [isQuotesModalOpen, setIsQuotesModalOpen] = useState(false);
   const [selectedStrategyForChart, setSelectedStrategyForChart] = useState<InvestmentStrategy | null>(null);
   const [isExecuting, setIsExecuting] = useState(false);
   const [showExecutionFlash, setShowExecutionFlash] = useState(false);
@@ -48,6 +50,14 @@ export default function Home() {
     setIsHistoryModalOpen(false);
   };
 
+  const handleOpenQuotesModal = () => {
+    setIsQuotesModalOpen(true);
+  };
+
+  const handleCloseQuotesModal = () => {
+    setIsQuotesModalOpen(false);
+  };
+
   const handleExecuteStrategy = (strategy: InvestmentStrategy) => {
     setIsModalOpen(false); // Close the strategy modal
     setExecutedStrategy(strategy);
@@ -75,6 +85,7 @@ export default function Home() {
 
       <Header 
         onShowHistory={handleOpenHistoryModal} 
+        onShowQuotes={handleOpenQuotesModal}
         clients={clients}
         selectedClient={selectedClient}
         onClientChange={setSelectedClient}
@@ -107,6 +118,11 @@ export default function Home() {
        <HistoryModal 
         isOpen={isHistoryModalOpen}
         onClose={handleCloseHistoryModal}
+      />
+
+      <BankQuotesModal
+        isOpen={isQuotesModalOpen}
+        onClose={handleCloseQuotesModal}
       />
 
       {isExecuting && executedStrategy && (
