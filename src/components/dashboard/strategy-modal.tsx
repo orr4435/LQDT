@@ -148,7 +148,7 @@ export function StrategyModal({ isOpen, onClose, transaction, onExecute, onSelec
                           </div>
                         </div>
                         <div className="text-right mt-2 md:mt-0">
-                          <div className="text-2xl font-bold" style={{ color: strategy.color }}>
+                          <div className="text-2xl font-bold text-green-400">
                             {formatCurrency(strategy.expectedReturn)}
                           </div>
                           <div className="text-sm text-muted-foreground">תשואה צפויה</div>
