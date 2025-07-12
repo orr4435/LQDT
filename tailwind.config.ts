@@ -108,9 +108,10 @@ export default {
             from: { transform: 'translateY(20px)', opacity: '0' },
             to: { transform: 'translateY(0)', opacity: '1' },
         },
-        'quote-flash': {
-            '0%, 100%': { backgroundColor: 'transparent' },
-            '50%': { backgroundColor: 'hsl(var(--accent) / 0.1)' },
+        'quote-flash-text': {
+            '0%': { opacity: '0.5' },
+            '50%': { opacity: '1' },
+            '100%': { opacity: '0.5' },
         },
       },
       animation: {
@@ -121,7 +122,7 @@ export default {
         'fade-in': 'fade-in 0.3s ease-out forwards',
         'zoom-in': 'zoom-in 0.3s ease-out forwards',
         'slide-in': 'slide-in 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards',
-        'quote-flash': 'quote-flash 2s ease-in-out infinite',
+        'quote-flash-text': 'quote-flash-text 1.5s ease-in-out infinite',
       },
     },
   },
