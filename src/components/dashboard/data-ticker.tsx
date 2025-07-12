@@ -4,14 +4,14 @@
 import { TrendingUp } from 'lucide-react';
 
 const tickerData = [
-  { label: 'דולר', value: '3.72', change: '+0.25%' },
-  { label: 'אירו', value: '4.01', change: '-0.15%' },
-  { label: 'מק"מ 3 חודשים', value: '4.21%', change: '+0.02%' },
-  { label: 'מק"מ 6 חודשים', value: '4.35%', change: '+0.01%' },
-  { label: 'מק"מ 12 חודשים', value: '4.52%', change: '+0.03%' },
-  { label: 'פיקדון בנקאי 3 חודשים', value: '3.8%', change: '0.00%' },
-  { label: 'פיקדון בנקאי 6 חודשים', value: '4.0%', change: '0.00%' },
-  { label: 'ריבית בנק ישראל', value: '4.75%', change: '0.00%' },
+  { label: 'דולר', value: '3.75', change: '+0.12%' },
+  { label: 'אירו', value: '4.05', change: '-0.08%' },
+  { label: 'מק"מ 3 חודשים', value: '4.25%', change: '+0.01%' },
+  { label: 'מק"מ 6 חודשים', value: '4.40%', change: '+0.02%' },
+  { label: 'מק"מ 12 חודשים', value: '4.60%', change: '-0.01%' },
+  { label: 'פיקדון בנקאי (3 חודשים)', value: '3.9%', change: '+0.05%' },
+  { label: 'פיקדון בנקאי (6 חודשים)', value: '4.1%', change: '+0.03%' },
+  { label: 'ריבית בנק ישראל', value: '4.50%', change: '0.00%' },
 ];
 
 export function DataTicker() {
