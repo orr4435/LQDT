@@ -22,3 +22,8 @@ export interface InvestmentStrategy {
   dailyReturn: number;
   color: string;
 }
+
+export interface HistoricalDataPoint {
+  date: string;
+  savings: number;
+}

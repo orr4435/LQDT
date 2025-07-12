@@ -21,7 +21,7 @@ export default function Home() {
       setIsModalOpen(true);
     } else {
       setIsModalOpen(false);
-      setSelectedStrategyForChart(null);
+      // We no longer need to clear the chart selection here as it's independent
     }
   }, [selectedTransaction]);
 
@@ -53,10 +53,7 @@ export default function Home() {
           onSelectTransaction={handleSelectTransaction}
         />
         <div className="xl:col-span-2">
-          <ProjectionChart 
-            transaction={selectedTransaction} 
-            strategy={selectedStrategyForChart}
-          />
+          <ProjectionChart />
         </div>
       </main>
 
@@ -66,7 +63,7 @@ export default function Home() {
           onClose={handleCloseModal}
           transaction={selectedTransaction}
           onExecute={handleExecuteStrategy}
-          onSelectStrategyForChart={setSelectedStrategyForChart}
+          onSelectStrategyForChart={setSelectedStrategyForChart} // This prop is no longer used by ProjectionChart but might be useful for StrategyModal
         />
       )}
 
