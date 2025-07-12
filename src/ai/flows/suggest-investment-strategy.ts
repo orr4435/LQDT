@@ -5,7 +5,7 @@
  *
  * - suggestInvestmentStrategies - A function that suggests investment strategies.
  * - SuggestInvestmentStrategiesInput - The input type for the suggestInvestmentStrategies function.
- * - SuggestInvestmentStrategiesOutput - The return type for the suggestInvestmentStrategies function.
+ * - SuggestInvestmentStrategiesOutput - The return type for the suggestInvestmentStrategiesOutput function.
  */
 
 import {ai} from '@/ai/genkit';
@@ -18,20 +18,20 @@ const SuggestInvestmentStrategiesInputSchema = z.object({
 export type SuggestInvestmentStrategiesInput = z.infer<typeof SuggestInvestmentStrategiesInputSchema>;
 
 const InvestmentStrategySchema = z.object({
-  name: z.string().describe('The name of the investment strategy.'),
-  description: z.string().describe('A brief description of the strategy.'),
-  expectedReturn: z.number().describe('The expected return on investment in ILS for the given number of days.'),
-  annualRate: z.number().describe('The annual interest rate of the strategy.'),
-  risk: z.string().describe('The risk level associated with the strategy (e.g., low, medium, high).'),
+  name: z.string().describe('שם אסטרטגיית ההשקעה בעברית.'),
+  description: z.string().describe('תיאור קצר של האסטרטגיה בעברית.'),
+  expectedReturn: z.number().describe('התשואה הצפויה בש"ח עבור מספר הימים שצוין.'),
+  annualRate: z.number().describe('שיעור הריבית השנתי של האסטרטגיה.'),
+  risk: z.string().describe('רמת הסיכון של האסטרטגיה (למשל, נמוכה, בינונית, גבוהה).'),
   allocation: z.array(
     z.object({
-      instrument: z.string().describe('The name of the investment instrument (e.g., deposit, bond).'),
-      percentage: z.number().describe('The percentage of the total amount allocated to this instrument.'),
-      rate: z.number().describe('The interest rate for this instrument.'),
+      instrument: z.string().describe('שם מכשיר ההשקעה בעברית (למשל, פיקדון, אג"ח).'),
+      percentage: z.number().describe('האחוז מסך הסכום המוקצה למכשיר זה.'),
+      rate: z.number().describe('שיעור הריבית עבור מכשיר זה.'),
     })
-  ).describe('The asset allocation breakdown for this strategy.'),
-  dailyReturn: z.number().describe('The expected daily return on investment in ILS.'),
-  color: z.string().describe('The color associated with the strategy, represented as a hex code.'),
+  ).describe('פירוט הקצאת הנכסים לאסטרטגיה זו.'),
+  dailyReturn: z.number().describe('התשואה היומית הצפויה בש"ח.'),
+  color: z.string().describe('הצבע המשויך לאסטרטגיה, בפורמט hex code.'),
 });
 
 const SuggestInvestmentStrategiesOutputSchema = z.array(InvestmentStrategySchema);
@@ -45,17 +45,22 @@ const suggestInvestmentStrategiesPrompt = ai.definePrompt({
   name: 'suggestInvestmentStrategiesPrompt',
   input: {schema: SuggestInvestmentStrategiesInputSchema},
   output: {schema: SuggestInvestmentStrategiesOutputSchema},
-  prompt: `You are an expert financial advisor specializing in liquidity management. Based on the transaction amount and the number of days until payment, suggest five investment strategies: a conservative strategy, a balanced strategy, an aggressive strategy, and two distinct currency hedging strategies (for USD and EUR). For each strategy provide a breakdown of the asset allocation, including the investment instrument, the percentage of the total amount allocated to the instrument, and the interest rate for that instrument.
+  prompt: `אתה יועץ פיננסי מומחה המתמחה בניהול נזילות. בהתבסס על סכום העסקה ומספר הימים עד לתשלום, הצע חמש אסטרטגיות השקעה: אסטרטגיה שמרנית, אסטרטגיה מאוזנת, אסטרטגיה אגרסיבית, ושתי אסטרטגיות נפרדות לגידור מט"ח (דולר ואירו). עבור כל אסטרטגיה, ספק פירוט של הקצאת הנכסים, כולל מכשיר ההשקעה, אחוז ההקצאה ושיעור הריבית. כל הפלט חייב להיות בעברית.
 
-Transaction Amount: {{amount}}
-Days to Payment: {{daysToPayment}}
+סכום העסקה: {{amount}}
+ימים לתשלום: {{daysToPayment}}
 
-IMPORTANT: The 'expectedReturn' field must be calculated ONLY for the specified 'daysToPayment', not an annual return. It should be the total profit for the period.
-The 'dailyReturn' should be the 'expectedReturn' divided by 'daysToPayment'.
+חשוב: יש לחשב את השדה 'expectedReturn' אך ורק עבור מספר הימים שצוין ב-'daysToPayment', ולא כתשואה שנתית. זה צריך להיות הרווח הכולל לתקופה.
+השדה 'dailyReturn' צריך להיות 'expectedReturn' חלקי 'daysToPayment'.
 
-Suggest five distinct investment strategies with varying risk levels.
+הצע חמש אסטרטגיות השקעה שונות עם רמות סיכון משתנות, עם תיאורים בעברית:
+1.  **אסטרטגיה שמרנית**: התמקדות בהשקעות נזילות ובטוחות מאוד כדי לשמר את ההון תוך יצירת תשואה קטנה.
+2.  **אסטרטגיה מאוזנת**: שילוב של שימור הון וצמיחה מתונה, תוך איזון בין מכשירים בסיכון נמוך לכאלה עם פוטנציאל תשואה גבוה יותר.
+3.  **אסטרטגיה אגרסיבית**: מקסום התשואה על ידי נטילת סיכון גבוה יותר, תוך התמקדות במכשירים בעלי פוטנציאל צמיחה גבוה.
+4.  **גידור מט"ח (דולר אמריקאי)**: הגנה על ערך הסכום מפני תנודות בשער החליפין של הדולר.
+5.  **גידור מט"ח (אירו)**: הגנה על ערך הסכום מפני תנודות בשער החליפין של האירו.
 
-Here is the format that must be followed, in JSON:
+הפורמט חייב להיות JSON, כפי שמצוין כאן:
 {{$output}}`,
 });
 
