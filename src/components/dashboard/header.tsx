@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 
 export function Header() {
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
   useEffect(() => {
+    // Set the initial time on the client to avoid hydration mismatch
+    setCurrentTime(new Date()); 
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
@@ -21,8 +23,17 @@ export function Header() {
           </div>
         </div>
         <div className="text-left font-mono">
-          <div className="text-2xl text-primary">{currentTime.toLocaleTimeString('he-IL', { hour12: false })}</div>
-          <div className="text-sm text-accent">{currentTime.toLocaleDateString('he-IL')}</div>
+          {currentTime ? (
+            <>
+              <div className="text-2xl text-primary">{currentTime.toLocaleTimeString('he-IL', { hour12: false })}</div>
+              <div className="text-sm text-accent">{currentTime.toLocaleDateString('he-IL')}</div>
+            </>
+          ) : (
+            <>
+              <div className="text-2xl text-primary">--:--:--</div>
+              <div className="text-sm text-accent">--/--/----</div>
+            </>
+          )}
         </div>
       </div>
     </header>
