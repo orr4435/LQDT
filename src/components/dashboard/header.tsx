@@ -22,7 +22,7 @@ export function Header({ children }: { children?: ReactNode }) {
             <p className="text-accent mt-1">טרמינל אנה1 ליקוודיטי | חברה : משק וכלכלה |</p>
           </div>
         </div>
-        {children}
+        <div className="flex-1 flex justify-center">{children}</div>
         <div className="text-left font-mono">
           {currentTime ? (
             <>

@@ -59,7 +59,7 @@ export default function Home() {
       {showExecutionFlash && <div className="fixed inset-0 bg-primary/30 z-[100] animate-flash" />}
 
       <Header>
-        <div className="w-full max-w-xs">
+        <div className="w-full max-w-[280px]">
            <label htmlFor="client-select" className="text-sm text-muted-foreground mb-1 block">סינון לפי לקוח</label>
            <Select value={selectedClient} onValueChange={setSelectedClient}>
               <SelectTrigger id="client-select" className="w-full h-9">
