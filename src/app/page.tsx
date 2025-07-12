@@ -9,6 +9,7 @@ import { ProjectionChart } from '@/components/dashboard/projection-chart';
 import { StrategyModal } from '@/components/dashboard/strategy-modal';
 import { ExecutionFlow } from '@/components/dashboard/execution-flow';
 import { HistoryModal } from '@/components/dashboard/history-modal';
+import { ChatWidget } from '@/components/dashboard/chat-widget';
 import { dailyTransactions as allTransactions, clients } from '@/lib/data';
 import type { Transaction, InvestmentStrategy } from '@/lib/types';
 
@@ -115,6 +116,8 @@ export default function Home() {
           onClose={handleExecutionComplete}
         />
       )}
+      
+      <ChatWidget />
     </div>
   );
 }
