@@ -6,7 +6,7 @@ const stats = [
   { title: 'תשואה יומית', value: '₪485K', change: '+4.2%', positive: true },
   { title: 'ROI שנתי', value: '4.8%', change: '+0.5%', positive: true },
   { title: 'עסקאות היום', value: '5', subValue: '₪226M' },
-  { title: 'סיכון תיק', value: 'נמוך', subValue: '2.1/10' },
+  { title: 'סיכון תיק', value: 'נמוך עד חסר סיכון', subValue: '2.1/10' },
   { title: 'Alpha vs BM', value: '+0.8%', subValue: '₪32M' },
 ];
 
