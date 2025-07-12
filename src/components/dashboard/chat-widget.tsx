@@ -15,10 +15,10 @@ export function ChatWidget() {
       <div className="fixed bottom-6 left-6 z-50">
         <Button
           size="icon"
-          className="rounded-full w-16 h-16 bg-primary hover:bg-primary/90 shadow-lg"
+          className="rounded-full w-16 h-16 bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform hover:scale-110"
           onClick={() => setIsOpen(true)}
         >
-          <Bot className="h-8 w-8 text-primary-foreground" />
+          <Bot className="h-8 w-8 text-white" />
         </Button>
       </div>
 
