@@ -39,12 +39,11 @@ export default function Home() {
   };
 
   const handleExecuteStrategy = (strategy: InvestmentStrategy) => {
+    setIsModalOpen(false); // Close the strategy modal
     setExecutedStrategy(strategy);
     setIsExecuting(true);
     setShowExecutionFlash(true);
     setTimeout(() => setShowExecutionFlash(false), 500); // Flash duration
-    
-    // The ExecutionFlow component will handle its own closing after animation
   };
 
   const handleExecutionComplete = () => {
