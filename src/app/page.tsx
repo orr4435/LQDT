@@ -8,6 +8,7 @@ import { TransactionFeed } from '@/components/dashboard/transaction-feed';
 import { ProjectionChart } from '@/components/dashboard/projection-chart';
 import { StrategyModal } from '@/components/dashboard/strategy-modal';
 import { ExecutionFlow } from '@/components/dashboard/execution-flow';
+import { HistoryModal } from '@/components/dashboard/history-modal';
 import { dailyTransactions as allTransactions, clients } from '@/lib/data';
 import type { Transaction, InvestmentStrategy } from '@/lib/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -16,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 export default function Home() {
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [selectedStrategyForChart, setSelectedStrategyForChart] = useState<InvestmentStrategy | null>(null);
   const [isExecuting, setIsExecuting] = useState(false);
   const [showExecutionFlash, setShowExecutionFlash] = useState(false);
@@ -36,6 +38,14 @@ export default function Home() {
 
   const handleCloseModal = () => {
     setSelectedTransaction(null);
+  };
+  
+  const handleOpenHistoryModal = () => {
+    setIsHistoryModalOpen(true);
+  };
+  
+  const handleCloseHistoryModal = () => {
+    setIsHistoryModalOpen(false);
   };
 
   const handleExecuteStrategy = (strategy: InvestmentStrategy) => {
@@ -63,7 +73,7 @@ export default function Home() {
     <div className="min-h-screen bg-background text-foreground p-6 font-body">
       {showExecutionFlash && <div className="fixed inset-0 bg-primary/30 z-[100] animate-flash" />}
 
-      <Header>
+      <Header onShowHistory={handleOpenHistoryModal}>
         <div className="w-full max-w-[280px]">
            <label htmlFor="client-select" className="text-sm text-muted-foreground mb-1 block">סינון לפי לקוח</label>
            <Select value={selectedClient} onValueChange={setSelectedClient}>
@@ -103,6 +113,11 @@ export default function Home() {
           onSelectStrategyForChart={setSelectedStrategyForChart}
         />
       )}
+
+       <HistoryModal 
+        isOpen={isHistoryModalOpen}
+        onClose={handleCloseHistoryModal}
+      />
 
       {isExecuting && executedStrategy && (
         <ExecutionFlow 

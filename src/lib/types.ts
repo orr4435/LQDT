@@ -27,3 +27,13 @@ export interface HistoricalDataPoint {
   date: string;
   savings: number;
 }
+
+export interface ExecutedStrategy {
+  id: string;
+  purchaseDate: string;
+  sellDate: string;
+  strategyName: string;
+  amount: number;
+  profit: number;
+  benchmarkProfit: number; // Profit if money was left in checking account (עו"ש)
+}

@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect, type ReactNode } from 'react';
+import { Button } from '@/components/ui/button';
+import { History } from 'lucide-react';
 
-export function Header({ children }: { children?: ReactNode }) {
+export function Header({ children, onShowHistory }: { children?: ReactNode, onShowHistory: () => void }) {
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -23,18 +25,24 @@ export function Header({ children }: { children?: ReactNode }) {
           </div>
         </div>
         <div className="flex-1 flex justify-center">{children}</div>
-        <div className="text-left font-mono">
-          {currentTime ? (
-            <>
-              <div className="text-2xl text-primary">{currentTime.toLocaleTimeString('he-IL', { hour12: false })}</div>
-              <div className="text-sm text-accent">{currentTime.toLocaleDateString('he-IL')}</div>
-            </>
-          ) : (
-            <>
-              <div className="text-2xl text-primary">--:--:--</div>
-              <div className="text-sm text-accent">--/--/----</div>
-            </>
-          )}
+        <div className="flex items-center gap-4">
+          <Button variant="outline" onClick={onShowHistory}>
+            <History className="me-2 h-4 w-4" />
+            היסטוריית אסטרטגיות
+          </Button>
+          <div className="text-left font-mono">
+            {currentTime ? (
+              <>
+                <div className="text-2xl text-primary">{currentTime.toLocaleTimeString('he-IL', { hour12: false })}</div>
+                <div className="text-sm text-accent">{currentTime.toLocaleDateString('he-IL')}</div>
+              </>
+            ) : (
+              <>
+                <div className="text-2xl text-primary">--:--:--</div>
+                <div className="text-sm text-accent">--/--/----</div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </header>

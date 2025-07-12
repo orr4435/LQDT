@@ -1,5 +1,5 @@
-import type { Transaction, HistoricalDataPoint } from './types';
-import { format } from 'date-fns';
+import type { Transaction, HistoricalDataPoint, ExecutedStrategy } from './types';
+import { format, subDays, addDays } from 'date-fns';
 
 export const clients: string[] = [
     'אופקים', 'אור יהודה', 'אור עקיבא', 'אילת', 'אלעד', 'אריאל', 'אשדוד', 'אשקלון',
@@ -50,3 +50,30 @@ const generateHistoricalData = (): HistoricalDataPoint[] => {
 };
 
 export const historicalSavings: HistoricalDataPoint[] = generateHistoricalData();
+
+const generateExecutedStrategies = (): ExecutedStrategy[] => {
+    const strategies: ExecutedStrategy[] = [];
+    const today = new Date();
+    for (let i = 0; i < 50; i++) {
+        const daysAgo = Math.floor(Math.random() * 365);
+        const investmentDays = Math.floor(Math.random() * 25) + 5; // 5 to 30 days
+        const purchaseDate = subDays(today, daysAgo);
+        const sellDate = addDays(purchaseDate, investmentDays);
+        const amount = Math.floor(Math.random() * 4800001) + 200000; // 200K to 5M
+        const annualRate = (Math.random() * 3 + 2) / 100; // 2% to 5%
+        const profit = amount * (annualRate / 365) * investmentDays;
+        
+        strategies.push({
+            id: `exec-${i + 1}`,
+            purchaseDate: format(purchaseDate, 'yyyy-MM-dd'),
+            sellDate: format(sellDate, 'yyyy-MM-dd'),
+            strategyName: i % 3 === 0 ? 'אסטרטגיה מאוזנת' : (i % 3 === 1 ? 'אסטרטגיית המערכת' : 'אסטרטגיה שמרנית'),
+            amount: amount,
+            profit: profit,
+            benchmarkProfit: 0, // עו"ש לא מניב תשואה
+        });
+    }
+    return strategies.sort((a, b) => new Date(b.purchaseDate).getTime() - new Date(a.purchaseDate).getTime());
+};
+
+export const executedStrategiesHistory: ExecutedStrategy[] = generateExecutedStrategies();
