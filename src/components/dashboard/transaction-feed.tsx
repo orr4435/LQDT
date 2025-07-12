@@ -58,7 +58,7 @@ export function TransactionFeed({ transactions, onSelectTransaction }: Transacti
             <div className="flex justify-between items-center text-sm">
               <div className="flex items-center text-muted-foreground">
                 <Clock className="h-4 w-4 me-1" />
-                {transaction.daysToPayment} ימים לתשלום
+                {transaction.daysToPayment} ימים לתשלום משוער לספק
               </div>
               <div className="text-primary font-semibold">
                 לחץ לאסטרטגיות ←
