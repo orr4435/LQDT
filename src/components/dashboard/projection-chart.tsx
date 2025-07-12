@@ -2,18 +2,26 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { formatCurrency } from '@/lib/utils';
-import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContainer } from 'recharts';
-import { ChartConfig } from '@/components/ui/chart';
+import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContainer, Legend } from 'recharts';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
 import { TrendingUp } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from '@/components/ui/card';
 import { historicalSavings as generateHistoricalSavings } from '@/lib/data';
 import type { HistoricalDataPoint } from '@/lib/types';
 import { format } from 'date-fns';
 
 const chartConfig = {
-  total: {
-    label: 'חיסכון מצטבר',
+  savings: {
+    label: 'חיסכון המערכת',
     color: 'hsl(var(--primary))',
+  },
+  traditional: {
+    label: 'ניהול מסורתי',
+    color: 'hsl(var(--chart-2))',
+  },
+  checking: {
+    label: 'ריבית על עו"ש',
+    color: 'hsl(var(--muted-foreground))',
   },
 } satisfies ChartConfig;
 
@@ -34,74 +42,98 @@ export function ProjectionChart() {
         date: day.date,
         dateFormatted: format(new Date(day.date), "MMM d"),
         savings: cumulativeSavings,
+        traditional: cumulativeSavings * 0.45, // 55% lower
+        checking: cumulativeSavings * 0.10, // 90% lower
       };
     });
   }, [historicalData]);
 
   const totalSavings = chartData.length > 0 ? chartData[chartData.length - 1].savings : 0;
+  
+  if (historicalData.length === 0) {
+    return (
+      <Card className="bg-card border-primary h-full flex items-center justify-center">
+        <p className="text-muted-foreground">טוען נתוני גרף...</p>
+      </Card>
+    );
+  }
 
   return (
-    <Card className="bg-card border-primary h-full">
-      <CardHeader className="flex flex-row justify-between items-center">
-        <div>
-          <CardTitle className="text-xl font-bold text-primary flex items-center">
-            <TrendingUp className="me-2 h-6 w-6" />
-            חיסכון שנתי מצטבר מאסטרטגיות
-          </CardTitle>
-           <p className="text-muted-foreground mt-1 text-sm">סה"כ חיסכון מתחילת השנה: <span className="text-green-400 font-bold">{formatCurrency(totalSavings)}</span></p>
-        </div>
+    <Card className="bg-card border-primary h-full flex flex-col">
+      <CardHeader>
+        <CardTitle className="text-xl font-bold text-primary flex items-center">
+          <TrendingUp className="me-2 h-6 w-6" />
+          חיסכון שנתי מצטבר מאסטרטגיות
+        </CardTitle>
+         <CardDescription>סה"כ חיסכון מתחילת השנה: <span className="text-green-400 font-bold">{formatCurrency(totalSavings)}</span></CardDescription>
       </CardHeader>
-      <CardContent className="h-[400px] p-0">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData}>
-              <defs>
-                  <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.1}/>
-                  </linearGradient>
-                </defs>
+      <CardContent className="flex-1 -mt-4">
+          <ChartContainer config={chartConfig} className="h-full w-full">
+            <AreaChart accessibilityLayer data={chartData}>
               <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
               <XAxis 
                 dataKey="dateFormatted" 
-                tick={{ fill: 'hsl(var(--muted-foreground))' }} 
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} 
                 tickLine={false} 
                 axisLine={false} 
                 interval={chartData.length > 0 ? Math.floor(chartData.length / 10) : 0}
               />
               <YAxis 
-                tickFormatter={(value) => `${formatCurrency(value as number).replace('₪', '')}K`} 
-                tick={{ fill: 'hsl(var(--muted-foreground))' }} 
+                tickFormatter={(value) => `${formatCurrency(value as number).replace('₪', '')}`}
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
                 tickLine={false} 
                 axisLine={false}
                 domain={['dataMin', 'dataMax']}
-                scale="sqrt"
                 />
-              <Tooltip
+              <ChartTooltip
                 cursor={{ stroke: 'hsl(var(--primary))' }}
-                content={({ active, payload }) => {
-                  if (active && payload && payload.length) {
-                    const data = payload[0].payload;
-                    return (
-                      <div className="p-2 rounded-lg border bg-card text-sm shadow-lg">
-                        <p className="font-bold">{data.dateFormatted}</p>
-                        <p className="text-primary">{`חיסכון: ${formatCurrency(data.savings)}`}</p>
-                      </div>
-                    );
-                  }
-                  return null;
-                }}
+                content={<ChartTooltipContent indicator="dot" />}
               />
+               <defs>
+                  <linearGradient id="fillSavings" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--color-savings)" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="var(--color-savings)" stopOpacity={0.1}/>
+                  </linearGradient>
+                  <linearGradient id="fillTraditional" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--color-traditional)" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="var(--color-traditional)" stopOpacity={0.1}/>
+                  </linearGradient>
+                   <linearGradient id="fillChecking" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--color-checking)" stopOpacity={0.4}/>
+                    <stop offset="95%" stopColor="var(--color-checking)" stopOpacity={0.05}/>
+                  </linearGradient>
+                </defs>
               <Area 
-                dataKey="savings" 
-                type="monotone" 
-                stroke="hsl(var(--primary))"
-                fill="url(#colorTotal)"
+                dataKey="savings"
+                type="natural"
+                fill="url(#fillSavings)"
+                stroke="var(--color-savings)"
                 strokeWidth={2}
                 dot={false}
               />
+              <Area 
+                dataKey="traditional"
+                type="natural"
+                fill="url(#fillTraditional)"
+                stroke="var(--color-traditional)"
+                strokeWidth={2}
+                dot={false}
+              />
+               <Area 
+                dataKey="checking"
+                type="natural"
+                fill="url(#fillChecking)"
+                stroke="var(--color-checking)"
+                strokeWidth={2}
+                strokeDasharray="3 4"
+                dot={false}
+              />
             </AreaChart>
-          </ResponsiveContainer>
+          </ChartContainer>
       </CardContent>
+       <CardFooter className="flex-col items-start gap-2 text-sm pt-4 border-t">
+          <ChartLegend content={<ChartLegendContent />} />
+      </CardFooter>
     </Card>
   );
 }
