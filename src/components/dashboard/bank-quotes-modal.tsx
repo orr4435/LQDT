@@ -65,7 +65,7 @@ export function BankQuotesModal({ isOpen, onClose }: BankQuotesModalProps) {
                 })
             );
             setTick(prev => prev + 1); // Trigger re-render
-        }, 2000); // Update every 2 seconds
+        }, 4000); // Update every 4 seconds
 
         return () => clearInterval(interval);
     }, [isOpen]);

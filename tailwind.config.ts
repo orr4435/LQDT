@@ -122,7 +122,7 @@ export default {
         'fade-in': 'fade-in 0.3s ease-out forwards',
         'zoom-in': 'zoom-in 0.3s ease-out forwards',
         'slide-in': 'slide-in 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards',
-        'quote-flash-text': 'quote-flash-text 1.5s ease-in-out infinite',
+        'quote-flash-text': 'quote-flash-text 3s ease-in-out infinite',
       },
     },
   },
