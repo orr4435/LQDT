@@ -13,7 +13,7 @@ const generateHistoricalData = (): HistoricalDataPoint[] => {
   const data: HistoricalDataPoint[] = [];
   const today = new Date();
   const yearStart = new Date(today.getFullYear(), 0, 1);
-  let currentDate = yearStart;
+  let currentDate = new Date(yearStart.getTime());
 
   while (currentDate <= today) {
     // Simulate savings for each day. Random value for demonstration.

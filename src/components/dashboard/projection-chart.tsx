@@ -1,12 +1,13 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { formatCurrency } from '@/lib/utils';
 import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 import { ChartConfig } from '@/components/ui/chart';
 import { TrendingUp } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { historicalSavings } from '@/lib/data';
+import { historicalSavings as generateHistoricalSavings } from '@/lib/data';
+import type { HistoricalDataPoint } from '@/lib/types';
 import { format } from 'date-fns';
 
 const chartConfig = {
@@ -17,10 +18,17 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function ProjectionChart() {
+  const [historicalData, setHistoricalData] = useState<HistoricalDataPoint[]>([]);
+
+  useEffect(() => {
+    // Generate data on the client side to avoid hydration mismatch
+    setHistoricalData(generateHistoricalSavings);
+  }, []);
 
   const chartData = useMemo(() => {
+    if (historicalData.length === 0) return [];
     let cumulativeSavings = 0;
-    return historicalSavings.map(day => {
+    return historicalData.map(day => {
       cumulativeSavings += day.savings;
       return {
         date: day.date,
@@ -28,7 +36,7 @@ export function ProjectionChart() {
         savings: cumulativeSavings,
       };
     });
-  }, []);
+  }, [historicalData]);
 
   const totalSavings = chartData.length > 0 ? chartData[chartData.length - 1].savings : 0;
 
@@ -58,7 +66,7 @@ export function ProjectionChart() {
                 tick={{ fill: 'hsl(var(--muted-foreground))' }} 
                 tickLine={false} 
                 axisLine={false} 
-                interval={Math.floor(chartData.length / 10)}
+                interval={chartData.length > 0 ? Math.floor(chartData.length / 10) : 0}
               />
               <YAxis 
                 tickFormatter={(value) => `${formatCurrency(value as number).replace('₪', '')}K`} 
