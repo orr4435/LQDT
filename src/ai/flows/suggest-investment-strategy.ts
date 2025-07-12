@@ -20,7 +20,7 @@ export type SuggestInvestmentStrategiesInput = z.infer<typeof SuggestInvestmentS
 const InvestmentStrategySchema = z.object({
   name: z.string().describe('The name of the investment strategy.'),
   description: z.string().describe('A brief description of the strategy.'),
-  expectedReturn: z.number().describe('The expected return on investment in ILS.'),
+  expectedReturn: z.number().describe('The expected return on investment in ILS for the given number of days.'),
   annualRate: z.number().describe('The annual interest rate of the strategy.'),
   risk: z.string().describe('The risk level associated with the strategy (e.g., low, medium, high).'),
   allocation: z.array(
@@ -50,7 +50,10 @@ const suggestInvestmentStrategiesPrompt = ai.definePrompt({
 Transaction Amount: {{amount}}
 Days to Payment: {{daysToPayment}}
 
-Suggest three distinct investment strategies with varying risk levels. Make sure to include the expectedReturn and dailyReturn for each strategy.
+IMPORTANT: The 'expectedReturn' field must be calculated ONLY for the specified 'daysToPayment', not an annual return. It should be the total profit for the period.
+The 'dailyReturn' should be the 'expectedReturn' divided by 'daysToPayment'.
+
+Suggest three distinct investment strategies with varying risk levels.
 
 Here is the format that must be followed, in JSON:
 {{$output}}`,
