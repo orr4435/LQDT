@@ -93,8 +93,8 @@ export function StrategyModal({ isOpen, onClose, transaction, onExecute, onSelec
                   <div className="text-muted-foreground text-sm">מקור</div>
                   <div className="text-foreground text-xl">{transaction.source}</div>
                 </div>
-                <div className="md:col-span-2 flex gap-2 items-end">
-                    <div className="flex-grow">
+                <div className="md:col-span-2 flex gap-2 items-end justify-end">
+                    <div className="max-w-[160px]">
                         <label htmlFor="days-input" className="text-muted-foreground text-sm">מספר ימי השקעה</label>
                         <Input
                             id="days-input"
