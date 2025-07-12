@@ -13,7 +13,7 @@ import { format } from 'date-fns';
 const chartConfig = {
   savings: {
     label: 'חיסכון המערכת',
-    color: 'hsl(var(--primary))',
+    color: 'hsl(140 60% 40%)', // Green
   },
   traditional: {
     label: 'ניהול מסורתי',
@@ -21,7 +21,7 @@ const chartConfig = {
   },
   checking: {
     label: 'ריבית על עו"ש',
-    color: 'hsl(var(--muted-foreground))',
+    color: 'hsl(var(--destructive))', // Red
   },
 } satisfies ChartConfig;
 
